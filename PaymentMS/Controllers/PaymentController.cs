@@ -23,6 +23,7 @@ namespace PaymentMS.Controllers
         [HttpPost]
         public IActionResult ProcessPayment([FromBody] ProductContract productContract)
         {
+
             PaymentContext ctx = new PaymentContext(productContract);
 
             //check if rule is applicable and execute it one by one

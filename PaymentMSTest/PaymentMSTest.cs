@@ -33,11 +33,30 @@ namespace PaymentMSTest
         {
             string json = JsonConvert.SerializeObject(new { productType = prodType, productSegment = prodSegment, modeOfPayment = modeOfPay, amount = amt });
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            
             var result = await _client.PostAsync(serviceBaseUrl, httpContent);
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             var responseBody = await result.Content.ReadAsStringAsync();
+
+            //Assert
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);            
             Assert.IsFalse(responseBody.Contains("No Applicable Rules Found To Execute"));
 
         }
+
+        [TestCase("Mobile", "virtual", "Online", "£399")]
+        [TestCase("HEALTHCARE", "SERVICE", "Online", "£50")]
+        public async Task Given_BusinessRules_Are_Active_When_PaymentFor_Product_With_No_Applicable_Rules_Is_Made_Then_Returns_Blank_Response(string prodType, string prodSegment, string modeOfPay, string amt)
+        {
+            string json = JsonConvert.SerializeObject(new { productType = prodType, productSegment = prodSegment, modeOfPayment = modeOfPay, amount = amt });
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+           
+            var result = await _client.PostAsync(serviceBaseUrl, httpContent);
+            var res = await result.Content.ReadAsStringAsync();
+
+            //Assert
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.IsTrue(res.Contains("No Applicable Rules Found To Execute"));
+        }
+
     }
 }
