@@ -15,7 +15,7 @@ namespace PaymentMSTest
     {
         private WebApplicationFactory<Startup> AppFactory { get; set; }
         private HttpClient _client;
-        private readonly string serviceBaseUrl = "https://localhost:5001/Payment";
+        private readonly string serviceBaseUrl = "https://localhost:5001/ProcessPayment";
 
         [SetUp]
         public void Setup()
@@ -24,10 +24,14 @@ namespace PaymentMSTest
             _client = AppFactory.CreateClient();
         }
 
-        [Test]
-        public async Task Given_BusinessRules_Are_Active_When_PaymentFor_Product_With_Available_Rules_Is_Made_Then_Returns_Expected_ResponseAsync()
+        [TestCase("Book", "Physical", "Online", "£15")]
+        [TestCase("Mobile", "Physical", "CashOnDelivery", "£399")]
+        [TestCase("video", "virtual", "Online", "£5")]
+        [TestCase("NEWMEMBERSHIP", "MEMBERSHIP", "Online", "£25")]
+        [TestCase("UPGRADEMEMBERSHIP", "MEMBERSHIP", "Online", "£10")]
+        public async Task Given_BusinessRules_Are_Active_When_PaymentFor_Product_With_Available_Rules_Is_Made_Then_Returns_Expected_ResponseAsync(string prodType, string prodSegment, string modeOfPay, string amt)
         {
-            string json = JsonConvert.SerializeObject(new { productType = "book", productSegment = "physical", modeOfPayment = "online", amount = "£10" });
+            string json = JsonConvert.SerializeObject(new { productType = prodType, productSegment = prodSegment, modeOfPayment = modeOfPay, amount = amt });
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = await _client.PostAsync(serviceBaseUrl, httpContent);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
