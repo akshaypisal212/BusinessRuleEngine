@@ -35,6 +35,9 @@ namespace PaymentMSTest
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = await _client.PostAsync(serviceBaseUrl, httpContent);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            var responseBody = await result.Content.ReadAsStringAsync();
+            Assert.IsFalse(responseBody.Contains("No Applicable Rules Found To Execute"));
+
         }
     }
 }
