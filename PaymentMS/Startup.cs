@@ -29,6 +29,10 @@ namespace PaymentMS
             services.AddControllers();
             services.AddTransient<IRule, Shipping>();
             services.AddTransient<IRule, Royalty>();
+            services.AddTransient<IRule, Video>();
+            services.AddTransient<IRule, MembershipUpgrade>();
+            services.AddTransient<IRule, NewMembership>();
+            services.AddTransient<IRule, AgentCommission>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
