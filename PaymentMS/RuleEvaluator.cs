@@ -15,6 +15,7 @@ namespace PaymentMS.Controllers
 
         public IEnumerable<string> Execute(PaymentContext ctx)
         {
+            // pick up all registered rules and execute applicable rules for the selected product.
             var result = rules
                         .Where(rule => rule.IsApplicable(ctx))
                         .Select(rule => rule.Execute(ctx));
@@ -23,6 +24,8 @@ namespace PaymentMS.Controllers
             {
                 return result;
             }
+
+            //when selected product is available but no applicable rule is found for the product, then return null from evaluator
             return null;
         }
 
