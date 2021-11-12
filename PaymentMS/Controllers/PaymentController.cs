@@ -14,10 +14,10 @@ namespace PaymentMS.Controllers
     {
         public PaymentController(IEnumerable<IRule> rule)
         {
-            Rule = rule;
+            Rules = rule;
         }
 
-        public IEnumerable<IRule> Rule { get; }
+        public IEnumerable<IRule> Rules { get; }
 
         [Route("/ProcessPayment")]
         [HttpPost]
@@ -26,13 +26,13 @@ namespace PaymentMS.Controllers
             PaymentContext ctx = new PaymentContext(productContract);
 
             //check if rule is applicable and execute it one by one
-            var result = Rule.Where(rule => rule.IsApplicable(ctx))
-                        .Select(rule => rule.Execute(ctx));
+          
+            var resultCollection = new RuleEvaulator(Rules).Execute(ctx);
 
-            if (result == null || result.Count() == 0) 
+            if (resultCollection == null)
                 return Ok("No Applicable Rules Found To Execute");
 
-            return Ok(result);
+            return Ok(resultCollection);
             
         }
     }
