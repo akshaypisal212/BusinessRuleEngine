@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BusinessRuleEngine;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace PaymentMS.Controllers
 {
@@ -12,20 +13,31 @@ namespace PaymentMS.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        public PaymentController(IEnumerable<IRule> rule)
+        public PaymentController(IEnumerable<IRule> rule, ILogger<PaymentController> logger)
         {
-            Rules = rule;
+            this.Rules = rule;
+            this.Logger = logger;
         }
 
         public IEnumerable<IRule> Rules { get; }
+        public ILogger<PaymentController> Logger { get; }
 
         [Route("/ProcessPayment")]
         [HttpPost]
         public IActionResult ProcessPayment([FromBody] ProductContract productContract)
         {
+            PaymentContext ctx;
 
-            PaymentContext ctx = new PaymentContext(productContract);
-
+            try
+            {
+                ctx = new PaymentContext(productContract);
+            }
+            catch (Exception ce)
+            {
+                this.Logger.LogError(ce.Message, ce.StackTrace);
+                return BadRequest();
+            }
+            
             //check if rule is applicable and execute it one by one
           
             var resultCollection = new RuleEvaulator(Rules).Execute(ctx);

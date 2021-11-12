@@ -58,5 +58,17 @@ namespace PaymentMSTest
             Assert.IsTrue(res.Contains("No Applicable Rules Found To Execute"));
         }
 
+        [TestCase("CLOTHING", "Empty", "CASHONDELIVERY", "£20")]
+        public async Task Given_BusinessRules_Are_Active_When_PaymentFor_Invalid_Product_Is_Made_Then_Returns_Exception(string prodType, string prodSegment, string modeOfPay, string amt)
+        {
+            string json = JsonConvert.SerializeObject(new { productType = prodType, productSegment = prodSegment, modeOfPayment = modeOfPay, amount = amt });
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var result = await _client.PostAsync(serviceBaseUrl, httpContent);
+
+            //Assert
+            Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
     }
 }
