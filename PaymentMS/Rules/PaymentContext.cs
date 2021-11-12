@@ -1,4 +1,6 @@
-﻿using PaymentMS.Controllers;
+﻿using System;
+using PaymentMS.Controllers;
+using PaymentMS.Enums;
 
 namespace BusinessRuleEngine
 {
@@ -6,17 +8,17 @@ namespace BusinessRuleEngine
     {
         public PaymentContext(ProductContract productContract)
         {
-            ProductType = productContract.productType;
-            ProductSegment = productContract.ProductSegment;
-            ModeOfPayment = productContract.ModeOfPayment;
+            ProductType = (ProductType)Enum.Parse(typeof(ProductType), productContract.productType, true);
+            ProductSegment = (ProductSegment)Enum.Parse(typeof(ProductSegment), productContract.ProductSegment, true);
+            ModeOfPayment = (ModeOfPayment)Enum.Parse(typeof(ModeOfPayment), productContract.ModeOfPayment, true);
             Amount = productContract.Amount;
         }
 
-        public string ProductType { get; set; }
+        public ProductType ProductType { get; set; }
 
-        public string ProductSegment { get; set; }
+        public ProductSegment ProductSegment { get; set; }
 
-        public string ModeOfPayment { get; set; }
+        public ModeOfPayment ModeOfPayment { get; set; }
 
         public string Amount { get; set; }
     }

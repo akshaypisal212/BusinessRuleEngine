@@ -1,4 +1,6 @@
-﻿namespace BusinessRuleEngine
+﻿using PaymentMS.Enums;
+
+namespace BusinessRuleEngine
 {
     public class Shipping : IRule
     {
@@ -11,7 +13,7 @@
         public bool IsApplicable(PaymentContext paymentContext)
         {
             //checks if rule is applicable for the selected product
-            if (paymentContext.ProductSegment.ToUpper() == "PHYSICAL") return true;
+            if (paymentContext.ProductSegment == ProductSegment.PHYSICAL) return true;
             return false;
         }
     }

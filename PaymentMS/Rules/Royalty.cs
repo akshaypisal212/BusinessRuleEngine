@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PaymentMS.Enums;
 
 namespace BusinessRuleEngine
 {
@@ -14,7 +15,7 @@ namespace BusinessRuleEngine
 
         public bool IsApplicable(PaymentContext paymentContext)
         {
-            if (paymentContext.ProductType.ToUpper() == "BOOK") return true;
+            if (paymentContext.ProductType == ProductType.BOOK) return true;
             return false;
         }
     }
